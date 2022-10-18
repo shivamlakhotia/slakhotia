@@ -2,7 +2,7 @@
 
 Hi, I am Shivam Lakhotia. I work as a Software Engineer at NVIDIA in Santa Clara, US. 
 
-My interests are coding, reading, coffee, surfing, chess, cooking, darts, etc. I enjoy conversations about psychology, happiness, wealth, natural language understanding. I completed my Bachelor's from IIT Guwahati in 2017 where I published a paper on using Hybrid Memory Cube to improve the efficiency of Convolutional Neural Networks on CPU. After graduating, I worked with Samsung R&D Institute in the Bixby team in Bangalore. I worked on bringing the virtual assistant experience offline so that users could use basic speech commands on theirr devices even when the device was offline.
+My interests are coding, reading, coffee, surfing, chess, cooking, darts, etc. I enjoy conversations about psychology, happiness, wealth, natural language understanding. I completed my Bachelor's from IIT Guwahati in 2017 where I published a paper on using Hybrid Memory Cube to improve the efficiency of Convolutional Neural Networks on CPU. After graduating, I worked with Samsung R&D Institute in the Bixby team in Bangalore. I worked on bringing the virtual assistant experience offline so that users could use basic speech commands on their devices even when the device was offline.
 
 In 2019 I came to the US to pursue my Master's in CS at UC San Diego. I am currently working with NVIDIA. Please reach out to connect. On weekends you can find me exploring coffee at local cafes.
 
