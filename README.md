@@ -1,37 +1,117 @@
-## Hello!
+# shivamlakhotia.github.io/slakhotia
 
-Hi, I am Shivam Lakhotia. I work as a Software Engineer at NVIDIA in Santa Clara, US. 
+Personal portfolio site for **Shivam Lakhotia** — Senior Software Engineer at NVIDIA, based in the Bay Area.
 
-My interests are coding, reading, coffee, surfing, chess, cooking, darts, etc. I enjoy conversations about psychology, happiness, wealth, natural language understanding. I completed my Bachelor's from IIT Guwahati in 2017 where I published a paper on using Hybrid Memory Cube to improve the efficiency of Convolutional Neural Networks on CPU. After graduating, I worked with Samsung R&D Institute in the Bixby team in Bangalore. I worked on bringing the virtual assistant experience offline so that users could use basic speech commands on their devices even when the device was offline.
+🌐 **Live site:** [shivamlakhotia.github.io/slakhotia](https://shivamlakhotia.github.io/slakhotia)
 
-In 2019 I came to the US to pursue my Master's in CS at UC San Diego. I am currently working with NVIDIA. Please reach out to connect. On weekends you can find me exploring coffee at local cafes.
+---
 
-<!---
-```markdown
-Syntax highlighted code block
+## About
 
-# Header 1
-## Header 2
-### Header 3
+This is a fully custom static site — no frameworks, no build tools. Pure HTML, CSS, and vanilla JS, deployed via GitHub Pages.
 
-- Bulleted
-- List
+**Sections:**
+- **Hero** — Full-screen cinematic intro
+- **About** — Background, philosophy, skills
+- **Experience** — Career timeline (NVIDIA → UCSD → Samsung R&D → IIT Guwahati)
+- **Adventures** — Surfing, windsurfing, scuba, guitar, chess, coffee
+- **Thinking** — Topics I find interesting
+- **Writing & Research** — NVIDIA Developer Blog posts + IEEE publication
+- **Contact** — GitHub, LinkedIn, email
 
-1. Numbered
-2. List
+---
 
-**Bold** and _Italic_ and `Code` text
+## Stack
 
-[Link](url) and ![Image](src)
+| Layer | Choice |
+|---|---|
+| Markup | HTML5 semantic |
+| Styling | Custom CSS with design tokens (no Tailwind/Bootstrap) |
+| Scripts | Vanilla JS — no dependencies |
+| Fonts | [Zodiak](https://www.fontshare.com/fonts/zodiak) (display) + [Satoshi](https://www.fontshare.com/fonts/satoshi) (body) via Fontshare |
+| Images | AI-generated hero and adventure backgrounds |
+| Hosting | GitHub Pages |
+
+---
+
+## Features
+
+- Dark / light mode toggle (preference saved to `localStorage`)
+- Page-wise scroll snap — each section fills the viewport
+- Scroll-reveal animations with IntersectionObserver (+ fallback)
+- Sticky header with blur backdrop
+- Fully responsive — mobile, tablet, desktop
+- Semantic HTML + keyboard accessible
+
+---
+
+## Local Development
+
+No build step needed — just open `index.html` in a browser:
+
+```bash
+# Clone
+git clone https://github.com/shivamlakhotia/slakhotia.git
+cd slakhotia
+
+# Open directly (macOS)
+open index.html
+
+# Or serve with any static server
+npx serve .
+python3 -m http.server 8080
 ```
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+---
 
-### Jekyll Themes
+## File Structure
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/shivamlakhotia/slakhotia/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+```
+slakhotia/
+├── index.html          # Single-page site
+├── style.css           # All styles — design tokens, layout, components, responsive
+├── main.js             # Theme toggle, scroll reveal, mobile nav, animations
+├── images/
+│   ├── hero-ocean.jpg          # Hero background (AI-generated)
+│   └── adventures-bg.jpg       # Adventures section background (AI-generated)
+└── README.md
+```
 
-### Support or Contact
+---
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
--->
+## Updating Content
+
+All content lives in `index.html`. Key sections to edit:
+
+- **About text** → `<section id="about">` → `.about-body`
+- **Timeline entries** → `<section id="work">` → `.timeline-item`
+- **Adventure cards** → `<section id="adventures">` → `.adventure-card`
+- **Photo grid** → `.photo-grid` — replace `.photo-placeholder` divs with `<img>` tags
+- **Writing cards** → `<section id="writing">` → `.writing-card`
+- **Contact links** → `<section id="contact">` → `.contact-links`
+
+### Adding your own photos
+
+Replace any `photo-placeholder` div with a real image:
+
+```html
+<!-- Before -->
+<div class="photo-placeholder dark">
+  <span>Surfing photo</span>
+</div>
+
+<!-- After -->
+<img src="images/surf-pacifica.jpg" alt="Surfing at Pacifica, CA" loading="lazy">
+```
+
+---
+
+## Planned
+
+- [ ] Personal blog / short essays (agents, systems design, psychology)
+- [ ] Projects section (Context Aware RAG, VSS Agent)
+- [ ] Photo gallery with real shots
+
+---
+
+*Built with [Perplexity Computer](https://www.perplexity.ai/computer)*

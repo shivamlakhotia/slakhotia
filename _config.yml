@@ -1,1 +1,6 @@
+# GitHub Pages config
+# No Jekyll theme — serving plain HTML/CSS/JS
 
+exclude:
+  - questionnaire.md
+  - "*.sh"
