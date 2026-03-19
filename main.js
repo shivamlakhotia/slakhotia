@@ -32,22 +32,15 @@
   }
 })();
 
-// ── 2. Scroll-aware header ────────────────────────────────────
+// ── 2. Scroll-aware header (never hides) ───────────────────────
 (function () {
   const header = document.getElementById('site-header');
   if (!header) return;
-  let lastY = 0, ticking = false;
 
   window.addEventListener('scroll', () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      const y = window.scrollY;
-      header.classList.toggle('scrolled', y > 60);
-      header.classList.toggle('hidden', y > lastY && y > 120);
-      lastY = y;
-      ticking = false;
-    });
+    header.classList.toggle('scrolled', window.scrollY > 60);
+    // Never hide the header — always visible
+    header.classList.remove('hidden');
   }, { passive: true });
 })();
 

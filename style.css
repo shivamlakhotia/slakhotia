@@ -1217,14 +1217,42 @@ a {
 
 /* ── PAGE-WISE SCROLL SNAP ── */
 
-/* Snap container sits on the body scroll, not html,
-   so nested overflow-y: auto on work-section works correctly */
 html {
   scroll-snap-type: y mandatory;
-  /* Ensure no clipping that trims text at section edges */
+  overflow-x: hidden;
+  overflow-y: scroll; /* single scrollable root */
+}
+
+body {
+  min-height: 100dvh;
   overflow-x: hidden;
 }
 
+/* Every section and the footer are self-contained stacking contexts
+   so backgrounds/overlays never bleed into neighbouring sections */
+section,
+.site-footer {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Absolute background layers stay inside their own section */
+.hero-bg,
+.adventures-full-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Foreground content sits above background layers */
+.hero-content,
+.adventures-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Snap behaviour */
 .hero,
 .about-section,
 .work-section,
@@ -1234,31 +1262,32 @@ html {
 .contact-section {
   scroll-snap-align: start;
   scroll-snap-stop: always;
-  /* Don't force 100dvh on content-heavy sections — let them be at least 100dvh */
   min-height: 100dvh;
-  /* Prevent text clipping at section boundaries */
-  overflow: visible;
 }
 
-/* Hero is exactly full-screen */
+/* Hero is exactly one viewport tall */
 .hero {
-  min-height: 100dvh;
   max-height: 100dvh;
 }
 
-/* Work and writing sections are taller than viewport — scroll within snap */
+/* Work + writing are taller than viewport — let them scroll through freely */
 .work-section,
 .writing-section {
   min-height: 100dvh;
   height: auto;
-  overflow: visible;
   scroll-snap-stop: normal;
+}
+
+/* Footer snaps into view and always sits on top */
+.site-footer {
+  scroll-snap-align: start;
+  z-index: 10;
+  overflow: visible; /* override the section rule so footer content isn’t clipped */
+  isolation: auto;
 }
 
 /* section-label must never be clipped */
 .section-label {
   overflow: visible !important;
-  clip: unset !important;
-  text-overflow: unset !important;
   white-space: nowrap;
 }
