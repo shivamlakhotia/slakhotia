@@ -7,9 +7,8 @@
   const html = document.documentElement;
   const btn = document.querySelector('[data-theme-toggle]');
 
-  // Detect system preference
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  let currentTheme = prefersDark ? 'dark' : 'light';
+  // Always default to dark — only switch on user toggle
+  let currentTheme = 'dark';
   html.setAttribute('data-theme', currentTheme);
 
   function updateIcon(theme) {

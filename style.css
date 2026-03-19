@@ -1214,3 +1214,27 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── PAGE-WISE SCROLL SNAP ── */
+html {
+  scroll-snap-type: y mandatory;
+}
+
+.hero,
+.about-section,
+.work-section,
+.adventures-section,
+.interests-section,
+.writing-section,
+.contact-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  min-height: 100dvh;
+}
+
+/* Work section is taller — allow it to scroll internally */
+.work-section {
+  scroll-snap-align: start;
+  min-height: 100dvh;
+  overflow-y: auto;
+}
