@@ -1216,8 +1216,13 @@ a {
 }
 
 /* ── PAGE-WISE SCROLL SNAP ── */
+
+/* Snap container sits on the body scroll, not html,
+   so nested overflow-y: auto on work-section works correctly */
 html {
   scroll-snap-type: y mandatory;
+  /* Ensure no clipping that trims text at section edges */
+  overflow-x: hidden;
 }
 
 .hero,
@@ -1229,12 +1234,31 @@ html {
 .contact-section {
   scroll-snap-align: start;
   scroll-snap-stop: always;
+  /* Don't force 100dvh on content-heavy sections — let them be at least 100dvh */
   min-height: 100dvh;
+  /* Prevent text clipping at section boundaries */
+  overflow: visible;
 }
 
-/* Work section is taller — allow it to scroll internally */
-.work-section {
-  scroll-snap-align: start;
+/* Hero is exactly full-screen */
+.hero {
   min-height: 100dvh;
-  overflow-y: auto;
+  max-height: 100dvh;
+}
+
+/* Work and writing sections are taller than viewport — scroll within snap */
+.work-section,
+.writing-section {
+  min-height: 100dvh;
+  height: auto;
+  overflow: visible;
+  scroll-snap-stop: normal;
+}
+
+/* section-label must never be clipped */
+.section-label {
+  overflow: visible !important;
+  clip: unset !important;
+  text-overflow: unset !important;
+  white-space: nowrap;
 }

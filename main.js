@@ -1,89 +1,63 @@
 /* ============================================================
    SHIVAM LAKHOTIA — Portfolio JS
+   All reveal logic unified: classes applied THEN observer set up.
    ============================================================ */
 
-// ── Theme Toggle ──
+// ── 1. Theme (runs synchronously — no flash) ──────────────────
 (function () {
   const html = document.documentElement;
-  const btn = document.querySelector('[data-theme-toggle]');
+  const btn  = document.querySelector('[data-theme-toggle]');
 
-  // Always default to dark — only switch on user toggle
-  let currentTheme = 'dark';
-  html.setAttribute('data-theme', currentTheme);
+  // Restore saved preference, otherwise always dark
+  let theme = localStorage.getItem('sl-theme') || 'dark';
+  html.setAttribute('data-theme', theme);
 
-  function updateIcon(theme) {
+  function setIcon(t) {
     if (!btn) return;
-    if (theme === 'dark') {
-      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`;
-      btn.setAttribute('aria-label', 'Switch to light mode');
-    } else {
-      btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>`;
-      btn.setAttribute('aria-label', 'Switch to dark mode');
-    }
+    btn.innerHTML = t === 'dark'
+      ? `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>`
+      : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>`;
+    btn.setAttribute('aria-label', t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
   }
 
-  updateIcon(currentTheme);
+  setIcon(theme);
 
   if (btn) {
     btn.addEventListener('click', () => {
-      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', currentTheme);
-      updateIcon(currentTheme);
+      theme = theme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', theme);
+      localStorage.setItem('sl-theme', theme);
+      setIcon(theme);
     });
   }
 })();
 
-// ── Scroll-aware header ──
+// ── 2. Scroll-aware header ────────────────────────────────────
 (function () {
   const header = document.getElementById('site-header');
   if (!header) return;
-
-  let lastScrollY = 0;
-  let ticking = false;
+  let lastY = 0, ticking = false;
 
   window.addEventListener('scroll', () => {
-    if (!ticking) {
-      window.requestAnimationFrame(() => {
-        const scrollY = window.scrollY;
-
-        if (scrollY > 60) {
-          header.classList.add('scrolled');
-        } else {
-          header.classList.remove('scrolled');
-        }
-
-        // Hide on scroll down, show on scroll up
-        if (scrollY > lastScrollY && scrollY > 120) {
-          header.classList.add('hidden');
-        } else {
-          header.classList.remove('hidden');
-        }
-
-        lastScrollY = scrollY;
-        ticking = false;
-      });
-      ticking = true;
-    }
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      header.classList.toggle('scrolled', y > 60);
+      header.classList.toggle('hidden', y > lastY && y > 120);
+      lastY = y;
+      ticking = false;
+    });
   }, { passive: true });
 })();
 
-// ── Mobile nav toggle ──
+// ── 3. Mobile nav ─────────────────────────────────────────────
 (function () {
-  const toggle = document.querySelector('.nav-toggle');
+  const toggle    = document.querySelector('.nav-toggle');
   const mobileNav = document.getElementById('mobile-nav');
-  const mobileLinks = document.querySelectorAll('.mobile-nav-link');
-
   if (!toggle || !mobileNav) return;
 
-  function openNav() {
-    toggle.classList.add('open');
-    mobileNav.classList.add('open');
-    mobileNav.removeAttribute('aria-hidden');
-    toggle.setAttribute('aria-expanded', 'true');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeNav() {
+  function close() {
     toggle.classList.remove('open');
     mobileNav.classList.remove('open');
     mobileNav.setAttribute('aria-hidden', 'true');
@@ -91,21 +65,62 @@
     document.body.style.overflow = '';
   }
 
-  toggle.addEventListener('click', () => {
-    const isOpen = toggle.classList.contains('open');
-    isOpen ? closeNav() : openNav();
-  });
+  function open() {
+    toggle.classList.add('open');
+    mobileNav.classList.add('open');
+    mobileNav.removeAttribute('aria-hidden');
+    toggle.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
 
-  mobileLinks.forEach(link => {
-    link.addEventListener('click', closeNav);
+  toggle.addEventListener('click', () =>
+    toggle.classList.contains('open') ? close() : open()
+  );
+
+  // Close on nav link click
+  mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+
+  // Close on outside click
+  document.addEventListener('click', (e) => {
+    if (toggle.classList.contains('open') &&
+        !mobileNav.contains(e.target) &&
+        !toggle.contains(e.target)) {
+      close();
+    }
   });
 })();
 
-// ── Scroll reveal ──
+// ── 4. Reveal animations (classes applied first, THEN observed) ──
 (function () {
-  const revealEls = document.querySelectorAll('.reveal');
+  // ---- Step A: tag all elements that should animate ----
+  function tag(selector, maxDelay) {
+    document.querySelectorAll(selector).forEach((el, i) => {
+      el.classList.add('reveal');
+      if (maxDelay && i < maxDelay) el.classList.add(`reveal-delay-${i + 1}`);
+    });
+  }
 
-  if (!revealEls.length) return;
+  tag('.section-label');
+  tag('.about-text h2');
+  tag('.about-body p',    5);
+  tag('.about-tags');
+  tag('.about-photo-col');
+  tag('.timeline-item',   5);
+  tag('.adventures-title');
+  tag('.adventure-card',  6);
+  tag('.photo-grid-section');
+  tag('.interest-item',   5);
+  tag('.writing-card',    3);
+  tag('.contact-inner h2');
+  tag('.contact-sub');
+  tag('.contact-links');
+
+  // ---- Step B: now that .reveal exists, observe everything ----
+  // Fallback: no IntersectionObserver support → show everything immediately
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+    return;
+  }
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -115,72 +130,36 @@
       }
     });
   }, {
-    threshold: 0.08,
-    rootMargin: '0px 0px -40px 0px'
+    threshold: 0.05,
+    rootMargin: '0px 0px -20px 0px'
   });
 
-  revealEls.forEach(el => observer.observe(el));
-})();
-
-// ── Add reveal classes dynamically ──
-(function () {
-  // About section
-  const aboutEls = document.querySelectorAll('.about-text h2, .about-body p, .about-tags, .about-photo-col');
-  aboutEls.forEach((el, i) => {
-    el.classList.add('reveal');
-    if (i < 5) el.classList.add(`reveal-delay-${i + 1}`);
-  });
-
-  // Work timeline items
-  document.querySelectorAll('.timeline-item').forEach((el, i) => {
-    el.classList.add('reveal');
-    if (i < 5) el.classList.add(`reveal-delay-${i + 1}`);
-  });
-
-  // Adventure cards
-  document.querySelectorAll('.adventure-card').forEach((el, i) => {
-    el.classList.add('reveal');
-    if (i < 6) el.classList.add(`reveal-delay-${i + 1}`);
-  });
-
-  // Interest items
-  document.querySelectorAll('.interest-item').forEach((el, i) => {
-    el.classList.add('reveal');
-    if (i < 5) el.classList.add(`reveal-delay-${i + 1}`);
-  });
-
-  // Contact
-  const contactEls = document.querySelectorAll('.contact-inner h2, .contact-sub, .contact-links');
-  contactEls.forEach((el, i) => {
-    el.classList.add('reveal');
-    el.classList.add(`reveal-delay-${i + 1}`);
-  });
-
-  // Section labels and headings
-  document.querySelectorAll('.section-label, .adventures-title').forEach(el => {
-    el.classList.add('reveal');
+  // Observe — and immediately mark anything already in the viewport as visible
+  document.querySelectorAll('.reveal').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      el.classList.add('visible'); // already in view on load
+    } else {
+      observer.observe(el);
+    }
   });
 })();
 
-// ── Smooth active nav link ──
+// ── 5. Active nav link highlight ─────────────────────────────
 (function () {
   const sections = document.querySelectorAll('section[id]');
   const navLinks = document.querySelectorAll('.nav-links a');
+  if (!navLinks.length) return;
 
-  const observer = new IntersectionObserver((entries) => {
+  const io = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        navLinks.forEach(link => {
-          link.style.color = '';
-          if (link.getAttribute('href') === '#' + entry.target.id) {
-            link.style.color = 'var(--color-text)';
-          }
-        });
-      }
+      if (!entry.isIntersecting) return;
+      navLinks.forEach(link => {
+        link.style.color = link.getAttribute('href') === '#' + entry.target.id
+          ? 'var(--color-text)' : '';
+      });
     });
-  }, {
-    threshold: 0.3
-  });
+  }, { threshold: 0.4 });
 
-  sections.forEach(s => observer.observe(s));
+  sections.forEach(s => io.observe(s));
 })();
