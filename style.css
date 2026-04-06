@@ -624,45 +624,6 @@ a {
   display: block;
 }
 
-.photo-placeholder {
-  width: 100%;
-  height: 100%;
-  min-height: 160px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
-  background: var(--color-surface-offset);
-  color: var(--color-text-faint);
-  padding: var(--space-8);
-  text-align: center;
-}
-
-.photo-placeholder span {
-  font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--color-text-muted);
-}
-
-.photo-placeholder small {
-  font-size: var(--text-xs);
-  color: var(--color-text-faint);
-}
-
-.photo-placeholder.dark {
-  background: rgba(255,255,255,0.05);
-  color: rgba(255,255,255,0.3);
-}
-
-.photo-placeholder.dark span {
-  color: rgba(255,255,255,0.5);
-}
-
-.photo-placeholder.dark small {
-  color: rgba(255,255,255,0.3);
-}
-
 /* ── WORK TIMELINE ── */
 .work-section {
   background: var(--color-surface);
@@ -875,9 +836,8 @@ a {
 }
 
 .photo-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  grid-template-rows: auto auto;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-3);
 }
 
@@ -895,14 +855,45 @@ a {
   display: block;
 }
 
-.photo-grid-item.large {
-  grid-row: span 2;
-  aspect-ratio: unset;
+.photo-grid-left,
+.photo-grid-right {
+  min-width: 0;
 }
 
-.photo-grid-item.cooking-photo {
-  grid-column: span 1;
-  aspect-ratio: 1 / 2;
+.photo-grid-right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.photo-grid-top-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.photo-grid-bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  align-items: stretch;
+}
+
+.photo-grid-mid-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 0;
+}
+
+.photo-grid-mid-stack .photo-grid-boat,
+.photo-grid-mid-stack .photo-grid-food {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.photo-grid-item.large {
+  aspect-ratio: 4/3;
 }
 
 .photo-grid-item.cooking-photo img {
@@ -912,17 +903,84 @@ a {
   object-position: center 35%;
 }
 
-.photo-grid-item .photo-placeholder {
-  min-height: 140px;
-  height: 100%;
-}
+/* Desktop: fixed row height so left column, boat/food stack, and grilling shot share one bottom edge */
+@media (min-width: 901px) {
+  .photo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    align-items: stretch;
+    gap: var(--space-3);
+    width: 100%;
+    aspect-ratio: 5 / 3;
+    min-height: 0;
+  }
 
-.photo-grid-note {
-  margin-top: var(--space-4);
-  font-size: var(--text-xs);
-  color: rgba(255,255,255,0.35);
-  text-align: center;
-  font-style: italic;
+  .photo-grid-left {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .photo-grid-left .photo-grid-item.large {
+    flex: 1 1 auto;
+    height: 100%;
+    min-height: 0;
+    aspect-ratio: unset;
+  }
+
+  .photo-grid-left .photo-grid-item.large img {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .photo-grid-right {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .photo-grid-top-row {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-3);
+  }
+
+  .photo-grid-top-row .photo-grid-item {
+    flex: 1 1 0;
+    min-width: 0;
+    aspect-ratio: 4/3;
+  }
+
+  .photo-grid-bottom-row {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: var(--space-3);
+    min-height: 0;
+  }
+
+  .photo-grid-mid-stack {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .photo-grid-mid-stack .photo-grid-boat,
+  .photo-grid-mid-stack .photo-grid-food {
+    flex: 1 1 0;
+    min-height: 0;
+    aspect-ratio: unset;
+  }
+
+  .photo-grid-bottom-row .photo-grid-item.cooking-photo {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 0;
+    aspect-ratio: unset;
+  }
 }
 
 /* ── INTERESTS ── */
@@ -1114,17 +1172,43 @@ a {
   }
 
   .photo-grid {
-    grid-template-columns: 1fr 1fr;
+    aspect-ratio: unset;
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: unset;
+    grid-template-rows: unset;
   }
 
-  .photo-grid-item.large {
-    grid-column: span 2;
-    grid-row: span 1;
-    aspect-ratio: 16/9;
+  .photo-grid-left .photo-grid-item.large {
+    aspect-ratio: 16 / 9;
+  }
+
+  .photo-grid-right {
+    height: auto;
+  }
+
+  .photo-grid-top-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+  }
+
+  .photo-grid-bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+    flex: unset;
+    min-height: unset;
+  }
+
+  .photo-grid-mid-stack .photo-grid-boat,
+  .photo-grid-mid-stack .photo-grid-food {
+    flex: unset;
+    aspect-ratio: 4 / 3;
   }
 
   .photo-grid-item.cooking-photo {
-    grid-column: span 2;
+    aspect-ratio: 1 / 2;
   }
 }
 
@@ -1136,17 +1220,19 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .photo-grid {
+  .photo-grid-top-row {
     grid-template-columns: 1fr;
   }
 
-  .photo-grid-item.large {
-    grid-column: span 1;
-    aspect-ratio: 4/3;
+  .photo-grid-bottom-row {
+    grid-template-columns: 1fr;
+  }
+
+  .photo-grid-mid-stack {
+    display: contents;
   }
 
   .photo-grid-item.cooking-photo {
-    grid-column: span 1;
     aspect-ratio: 1 / 2;
   }
 
